@@ -1,14 +1,16 @@
 package ru.spbau.mit
 
-fun getGreeting(): String {
-    val words = mutableListOf<String>()
-    words.add("Hello,")
-    
-    words.add("world!")
-
-    return words.joinToString(separator = " ")
-}
+import java.io.File
+import java.util.*
 
 fun main(args: Array<String>) {
-    println(getGreeting())
+    if (args.isEmpty()) {
+        throw IllegalArgumentException("should specify input file")
+    }
+
+    Scanner(File(args[0]).inputStream()).use {
+        val g = Graph(it)
+        val solver = Solver(g)
+        println(solver.solve())
+    }
 }

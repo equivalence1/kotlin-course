@@ -1,10 +1,17 @@
 package ru.spbau.mit
-import kotlin.test.assertEquals
 import org.junit.Test
+import java.io.File
+import java.util.*
+import kotlin.test.assertEquals
 
-class TestSource {
+class TestSolution {
     @Test
-    fun testGreeting() {
-        assertEquals("Hello, world!", getGreeting())
+    fun testSamples() {
+        File("Samples").listFiles().filter({file -> file.name.endsWith(".in")}).sorted().forEach {
+            println("file: " + it.name)
+            val solver = Solver(Graph(Scanner(it)))
+            val rightAnswer = Scanner(File(it.path.replaceAfter('.', "out"))).nextInt()
+            assertEquals(rightAnswer, solver.solve())
+        }
     }
 }
