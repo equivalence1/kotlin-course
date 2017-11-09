@@ -9,9 +9,11 @@ class TestSolution {
     fun testSamples() {
         File("Samples").listFiles().filter({file -> file.name.endsWith(".in")}).sorted().forEach {
             println("file: " + it.name)
-            val solver = Solver(Graph(Scanner(it)))
+            val g = Graph.readFrom(Scanner(it))
+            val solver = Solver(g)
             val rightAnswer = Scanner(File(it.path.replaceAfter('.', "out"))).nextInt()
             assertEquals(rightAnswer, solver.solve())
         }
+
     }
 }

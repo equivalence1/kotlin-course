@@ -3,70 +3,73 @@ package ru.spbau.mit
 import java.io.File
 import java.util.*
 
-class Graph(scanner: Scanner) {
+class Graph private constructor(private val scanner: Scanner) {
 
-    val n = scanner.nextInt()
-    private val m = scanner.nextInt()
-    private val g: ArrayList<ArrayList<Int>> = ArrayList()
+    var nrVertices = 0
+    val edges: MutableList<MutableList<Int>> = ArrayList()
+    private var nrEdges = 0
 
-    init {
-        for (i in 1..n) {
-            g.add(ArrayList())
+    private fun read() {
+        nrVertices = scanner.nextInt()
+        nrEdges = scanner.nextInt()
+
+        for (i in 1..nrVertices) {
+            edges.add(ArrayList())
         }
 
-        for (i in 1..m) {
+        for (i in 1..nrEdges) {
             val u = scanner.nextInt() - 1
             val v = scanner.nextInt() - 1
 
-            g[u].add(v)
-            g[v].add(u)
+            edges[u].add(v)
+            edges[v].add(u)
         }
     }
 
-    fun <T> foldIndexed(initValue: T, body: (T, Int) -> T): T {
-        return g.foldIndexed(initValue, {index, value, _ -> body(value, index)})
-    }
-
-    fun <T> adjustentFold(u: Int, initValue: T, body: (T, Int) -> T): T {
-        return g[u].fold(initValue, body)
+    companion object {
+        fun readFrom(scanner: Scanner): Graph {
+            val g = Graph(scanner)
+            g.read()
+            return g
+        }
     }
 
 }
 
 class Solver(private val g: Graph) {
 
-    private val was = BooleanArray(g.n, {false})
+    private val was = BooleanArray(g.nrVertices, {false})
 
     private fun hasCircle(u: Int, p: Int): Boolean {
-        if (was[u])
+        if (was[u]) {
             return false
+        }
         was[u] = true
 
-        return g.adjustentFold(u, false) {
-            prevValue, v -> prevValue || (was[v] && v != p) || hasCircle(v, u)
+        return g.edges[u].any {
+            v -> (was[v] && v != p) || hasCircle(v, u)
         }
     }
 
     private fun solve(u: Int): Int {
-        if (was[u])
-            return 0
-        if (!hasCircle(u, u))
-            return 1
-        return 0
+        return when {
+            was[u] -> 0
+            !hasCircle(u, u) -> 1
+            else -> 0
+        }
     }
 
     fun solve(): Int {
-        return g.foldIndexed(0) {
-            value, index -> value + solve(index)
-        }
+        return (1..g.nrVertices).sumBy({index -> solve(index - 1)})
     }
+
 }
 
 fun main(args: Array<String>) {
     val inputStream = if (!args.isEmpty()) File(args[0]).inputStream() else System.`in`
 
     Scanner(inputStream).use {
-        val g = Graph(it)
+        val g = Graph.readFrom(it)
         val solver = Solver(g)
         println(solver.solve())
     }
