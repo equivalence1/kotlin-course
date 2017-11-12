@@ -144,10 +144,6 @@ object FplPrinter : FplBaseVisitor<Unit>() {
         ctx.Int().accept(this)
     }
 
-    override fun visitDoubleExpr(ctx: FplParser.DoubleExprContext) {
-        ctx.Double().accept(this)
-    }
-
     override fun visitExprInExpr(ctx: FplParser.ExprInExprContext) {
         print("(")
         ctx.expression().accept(this)

@@ -1,3 +1,9 @@
+fun sum(a, b) {
+    return a + b
+}
+
+println(sum(1, 2))
+
 var a = 10
 var b = 20
 if (a > b) {
@@ -29,14 +35,9 @@ fun foo(n) {
 
 println(foo(41))
 
-fun foo() {
-    fun foo() {
-    }
-}
-
-foo()
-
-var b = a + (a + a) * a % a / a
+b = a + (a + a) * a % a / a     // b = 10
+println(a)
+println(b)
 println(b < a)
 println(b > a)
 println(b || a)
@@ -45,6 +46,8 @@ println(b >= a)
 println(b && a)
 println(b == a)
 println(b != a)
+println(0 || 1)
+println(1 && 0)
 
 if (a || b || 1) {
     fun f(n, m) {

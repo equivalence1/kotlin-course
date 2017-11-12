@@ -47,16 +47,15 @@ variable
 // expression
 
 expression
-    : name=Identifier '(' argumentsList ')'             # FcallExpr
-    | lhs=expression op=(Add | Sub) rhs=expression      # AddExpr
-    | lhs=expression op=(Mul | Div | Mod) rhs=expression      # MulExpr
-    | lhs=expression op=(G | Ge | L | Le | Eq | Neq) rhs=expression # CompareExpr
-    | lhs=expression op=(Or | And) rhs=expression          # LogicalExpr
-    | op=('+' | '-') expression                                    # UnaryExpr
-    | Identifier                                        # IdentifierExpr
-    | Int                                            # IntExpr
-    | Double                                        # DoubleExpr
-    | '(' expression ')'                                # ExprInExpr
+    : name=Identifier '(' argumentsList ')'                             # FcallExpr
+    | lhs=expression op=(Mul | Div | Mod) rhs=expression                # MulExpr
+    | lhs=expression op=(Add | Sub) rhs=expression                      # AddExpr
+    | lhs=expression op=(G | Ge | L | Le | Eq | Neq) rhs=expression     # CompareExpr
+    | lhs=expression op=(Or | And) rhs=expression                       # LogicalExpr
+    | op=('+' | '-') expression                                         # UnaryExpr
+    | Identifier                                                        # IdentifierExpr
+    | Int                                                               # IntExpr
+    | '(' expression ')'                                                # ExprInExpr
     ;
 
 argumentsList
@@ -90,7 +89,6 @@ returnStatement
 
 number
     : Int
-    | Double
     ;
 
 
@@ -133,10 +131,6 @@ fragment Digit
 Int
     : ('1'..'9') Digit*
     | '0'
-    ;
-
-Double
-    : Int ('.' Digit*)
     ;
 
 Add : '+';

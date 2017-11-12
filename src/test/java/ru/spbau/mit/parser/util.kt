@@ -12,5 +12,5 @@ fun redirectOut(fileName: String) {
 }
 
 fun readFile(fileName: String): List<String> {
-    return Files.readAllLines(Paths.get(fileName), Charset.defaultCharset()).flatMap { line -> line.split(' ') }
+    return Files.readAllLines(Paths.get(fileName), Charset.defaultCharset())
 }

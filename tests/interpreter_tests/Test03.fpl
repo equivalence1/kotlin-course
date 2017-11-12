@@ -1,0 +1,5 @@
+fun foo(a) {
+
+}
+
+println(foo(1 + (2 * 3) % b))

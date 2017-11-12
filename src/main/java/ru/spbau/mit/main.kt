@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.CharStreams
 import ru.spbau.mit.parser.FplErrorListener
 import ru.spbau.mit.parser.FplLexer
 import ru.spbau.mit.parser.FplParser
-import ru.spbau.mit.parser.FplPrinter
+import ru.spbau.mit.parser.Interpreter.FplInterpreter
 
 
 fun main(args: Array<String>) {
@@ -19,5 +19,10 @@ fun main(args: Array<String>) {
     val parser = FplParser(BufferedTokenStream(fplLexer))
     parser.addErrorListener(FplErrorListener)
 
-    parser.file().accept(FplPrinter)
+    val interpreter = FplInterpreter(parser)
+    try {
+        interpreter.evaluate()
+    } catch (e: Exception) {
+        println("Interpreter failed with error:\n" + e.message)
+    }
 }

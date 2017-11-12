@@ -15,8 +15,12 @@ class TestPrinter {
         FplParser(BufferedTokenStream(fplLexer)).file().accept(FplPrinter)
         System.out.flush()
 
-        val expected = readFile("tests/printer_tests/Test01.fpl").joinToString("") { s -> s.trim() }
-        val real = readFile("tests/output").joinToString("") { s -> s.trim() }
+        val expected = readFile("tests/printer_tests/Test01.fpl").filterNot { it.trim().startsWith("//") }
+                .flatMap { it.split(' ') }
+                .joinToString("") { s -> s.trim() }
+        val real = readFile("tests/output")
+                .flatMap { it.split(' ') }
+                .joinToString("") { s -> s.trim() }
 
         assertEquals(expected, real)
     }
