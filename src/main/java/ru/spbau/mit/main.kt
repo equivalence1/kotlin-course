@@ -1,14 +1,23 @@
 package ru.spbau.mit
 
-fun getGreeting(): String {
-    val words = mutableListOf<String>()
-    words.add("Hello,")
-    
-    words.add("world!")
+import org.antlr.v4.runtime.BufferedTokenStream
+import org.antlr.v4.runtime.CharStreams
+import ru.spbau.mit.parser.FplErrorListener
+import ru.spbau.mit.parser.FplLexer
+import ru.spbau.mit.parser.FplParser
+import ru.spbau.mit.parser.FplPrinter
 
-    return words.joinToString(separator = " ")
-}
 
 fun main(args: Array<String>) {
-    println(getGreeting())
+    if (args.size != 1) {
+        println("Should provide name of a file")
+        return
+    }
+
+    val fplLexer = FplLexer(CharStreams.fromFileName(args[0]))
+    fplLexer.addErrorListener(FplErrorListener)
+    val parser = FplParser(BufferedTokenStream(fplLexer))
+    parser.addErrorListener(FplErrorListener)
+
+    parser.file().accept(FplPrinter)
 }
