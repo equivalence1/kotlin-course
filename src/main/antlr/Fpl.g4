@@ -87,10 +87,6 @@ returnStatement
     : Return expression
     ;
 
-number
-    : Int
-    ;
-
 
 /*
  *  Lexer
