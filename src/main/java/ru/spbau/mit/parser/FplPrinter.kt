@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.tree.ErrorNode
 import org.antlr.v4.runtime.tree.TerminalNode
 
 /**
- * This object created only for testing purposes, following this issue: https://github.com/java-course-au/kotlin-course/issues/35
+ * This object was created only for testing purposes, following this issue: https://github.com/java-course-au/kotlin-course/issues/35
  * ("либо сделал стабильный принтер дерева и в качестве эталона сравнивал со строкой")
  */
 object FplPrinter : FplBaseVisitor<Unit>() {
