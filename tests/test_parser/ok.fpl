@@ -53,7 +53,7 @@ if (a || b || 1) {
 } else {
     while (a) {
         while(b) {
-            println(123.123)
+            println(123)
         }
     }
 }

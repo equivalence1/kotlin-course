@@ -6,7 +6,7 @@ typealias FunctionType = (List<Int>) -> Value
 
 class Scope {
 
-    val namespaces = Stack<Namespace>()
+    private val namespaces = Stack<Namespace>()
 
     fun currentFrame(): Namespace {
         return namespaces.peek()
@@ -36,11 +36,9 @@ class Scope {
 
     fun setVariable(name: String, value: Int): Boolean {
         val ns = getVarNamespace(name)
-        if (ns != null) {
-            ns.setVariable(name, value)
-            return true
-        } else {
-            return false
+        return when (ns != null) {
+            true -> {ns!!.setVariable(name, value); true}
+            false -> false
         }
     }
 
