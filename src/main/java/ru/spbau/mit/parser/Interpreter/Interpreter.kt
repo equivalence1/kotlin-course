@@ -3,25 +3,19 @@ package ru.spbau.mit.parser.Interpreter
 import ru.spbau.mit.parser.FplBaseVisitor
 import ru.spbau.mit.parser.FplParser
 
-class FplInterpreter(private val parser: FplParser) : FplBaseVisitor<Value>() {
+class FplInterpreter : FplBaseVisitor<Value>() {
 
     private val scope = Scope()
 
-    fun evaluate(): Int {
-        return parser.file().accept(this).value
+    fun evaluate(ctx: FplParser.FileContext): Int {
+        return ctx.accept(this).value
     }
 
     override fun visitFile(ctx: FplParser.FileContext): Value {
         scope.enterFrame()
 
         scope.addFunction("println") {args ->
-            args.forEachIndexed { index, arg ->
-                print(arg)
-                if (index != args.size - 1) {
-                    print(", ")
-                }
-            }
-            println()
+            println(args.joinToString(", "))
             DefaultValue
         }
 
@@ -29,15 +23,14 @@ class FplInterpreter(private val parser: FplParser) : FplBaseVisitor<Value>() {
     }
 
     override fun visitBlock(ctx: FplParser.BlockContext): Value {
-        var res: Value = DefaultValue
+        // I really don't know how to implement it with streams
+        // Can be done with foldl, but it would be ugly
         for (st in ctx.statements) {
-            val stValue = st.accept(this)
-            if (stValue.returned) {
-                res = stValue
-                break
-            }
+            val res = st.accept(this)
+            if (res.returned)
+                return res
         }
-        return res
+        return DefaultValue
     }
 
     override fun visitBlockWithBraces(ctx: FplParser.BlockWithBracesContext): Value {
@@ -50,58 +43,36 @@ class FplInterpreter(private val parser: FplParser) : FplBaseVisitor<Value>() {
     // statements {{{
 
     override fun visitStatement(ctx: FplParser.StatementContext): Value {
-        // TODO something better-looking?
-
-        var value: Value = DefaultValue
-
-        ctx.function()?.let {
-            with (ctx.function()) {
-                if (scope.currentFrame().functions.containsKey(name.text)) {
-                    throw RuntimeException("line ${ctx.start.line}: trying to overload function ${name.text}")
-                }
-                scope.addFunction(name.text) { args ->
-                    val params = parameterList().names
-
-                    if (params.size != args.size) {
-                        throw RuntimeException("function ${name.text} has exactly ${params.size} parameters, ${args.size} were given")
-                    }
-
-                    scope.enterFrame()
-                    params.forEachIndexed { index, token ->
-                        scope.addVariable(token.text)
-                        scope.setVariable(token.text, args[index])
-                    }
-                    val result = it.accept(this@FplInterpreter)
-                    scope.leaveFrame()
-
-                    result
-                }
-            }
-        }
-        ctx.variable()?.let {
-            value = it.accept(this)
-        }
-        ctx.expression()?.let {
-            value = it.accept(this)
-        }
-        ctx.whileStatement()?.let {
-            value = it.accept(this)
-        }
-        ctx.ifStatement()?.let {
-            value = it.accept(this)
-        }
-        ctx.assignment()?.let {
-            value = it.accept(this)
-        }
-        ctx.returnStatement()?.let {
-            value = it.accept(this)
-        }
-
-        return value
+        return ctx.getChild(0).accept(this)
     }
 
     override fun visitFunction(ctx: FplParser.FunctionContext): Value {
-        return ctx.blockWithBraces().accept(this)
+        with (ctx) {
+            if (scope.currentFrame().functions.containsKey(name.text)) {
+                throw RuntimeException("line ${ctx.start.line}: trying to overload function ${name.text}")
+            }
+
+            scope.addFunction(name.text) { args ->
+                val params = parameterList().names
+
+                if (params.size != args.size) {
+                    throw RuntimeException("function ${name.text} has exactly ${params.size} parameters, ${args.size} were given")
+                }
+
+                scope.enterFrame()
+                params.forEachIndexed { index, token ->
+                    scope.addVariable(token.text)
+                    scope.setVariable(token.text, args[index])
+                }
+                val result = blockWithBraces().accept(this@FplInterpreter)
+                scope.leaveFrame()
+
+                result
+            }
+        }
+
+        // here we only register function in scope, so just return @DefaultValue
+        return DefaultValue
     }
 
     override fun visitVariable(ctx: FplParser.VariableContext): Value {
@@ -192,7 +163,7 @@ class FplInterpreter(private val parser: FplParser) : FplBaseVisitor<Value>() {
             "*" -> Value(lhs * rhs, false)
             "/" -> Value(lhs / rhs, false)
             "%" -> Value(lhs % rhs, false)
-            else -> DefaultValue // unreachable
+            else -> throw IllegalArgumentException("bad mul expr")
         }
     }
 
@@ -206,7 +177,7 @@ class FplInterpreter(private val parser: FplParser) : FplBaseVisitor<Value>() {
             ">=" -> Value(if (lhs >= rhs) 1 else 0, false)
             "==" -> Value(if (lhs == rhs) 1 else 0, false)
             "!=" -> Value(if (lhs != rhs) 1 else 0, false)
-            else -> DefaultValue // unreachable
+            else -> throw IllegalArgumentException("bad cmp expr")
         }
     }
 
@@ -217,7 +188,7 @@ class FplInterpreter(private val parser: FplParser) : FplBaseVisitor<Value>() {
         return when (ctx.op.text) {
             "||" -> Value(if ((lhs != 0) || (rhs != 0)) 1 else 0, false)
             "&&" -> Value(if ((lhs != 0) && (rhs != 0)) 1 else 0, false)
-            else -> DefaultValue // unreachable
+            else -> throw IllegalArgumentException("bad logical expr")
         }
     }
 
@@ -226,7 +197,7 @@ class FplInterpreter(private val parser: FplParser) : FplBaseVisitor<Value>() {
         return when (ctx.op.text) {
             "+" -> Value(value, false)
             "-" -> Value(-value, false)
-            else -> DefaultValue // unreachable
+            else -> throw IllegalArgumentException("bad unary expr")
         }
     }
 

@@ -19,9 +19,9 @@ fun main(args: Array<String>) {
     val parser = FplParser(BufferedTokenStream(fplLexer))
     parser.addErrorListener(FplErrorListener)
 
-    val interpreter = FplInterpreter(parser)
+    val interpreter = FplInterpreter()
     try {
-        interpreter.evaluate()
+        interpreter.evaluate(parser.file())
     } catch (e: Exception) {
         println("Interpreter failed with error:\n" + e.message)
     }

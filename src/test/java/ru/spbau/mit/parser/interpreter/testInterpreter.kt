@@ -21,8 +21,8 @@ class TestInterpreter {
 
         val fplLexer = FplLexer(CharStreams.fromFileName("tests/interpreter_tests/Test01.fpl"))
         val parser = FplParser(BufferedTokenStream(fplLexer))
-        val int = FplInterpreter(parser)
-        int.evaluate()
+        val int = FplInterpreter()
+        int.evaluate(parser.file())
         System.out.flush()
 
         val expected = readFile("tests/interpreter_tests/Test01.expected")
@@ -35,16 +35,16 @@ class TestInterpreter {
     fun testParserIdentFail() {
         val fplLexer = FplLexer(CharStreams.fromFileName("tests/interpreter_tests/Test02.fpl"))
         val parser = FplParser(BufferedTokenStream(fplLexer))
-        val int = FplInterpreter(parser)
-        int.evaluate()
+        val int = FplInterpreter()
+        int.evaluate(parser.file())
     }
 
     @Test(expected = RuntimeException::class)
     fun testParserNumberFail() {
         val fplLexer = FplLexer(CharStreams.fromFileName("tests/interpreter_tests/Test03.fpl"))
         val parser = FplParser(BufferedTokenStream(fplLexer))
-        val int = FplInterpreter(parser)
-        int.evaluate()
+        val int = FplInterpreter()
+        int.evaluate(parser.file())
     }
 
 }
