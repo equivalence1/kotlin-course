@@ -82,8 +82,8 @@ class FplInterpreter : FplBaseVisitor<Value>() {
         val varName = ctx.name.text
         scope.addVariable(varName)
         ctx.expression()?.let {
-            val result = ctx.expression()?.accept(this)
-            scope.setVariable(varName, result!!.value)
+            val result = it.accept(this)
+            scope.setVariable(varName, result.value)
         }
         return Value(scope.getVariable(varName)!!, false)
     }
@@ -121,7 +121,7 @@ class FplInterpreter : FplBaseVisitor<Value>() {
         val value = ctx.expression().accept(this)
         val varName = ctx.varName.text
         if (!scope.setVariable(varName, value.value)) {
-            throw RuntimeException("line ${ctx.start.line}: variable ${varName} is not defined")
+            throw RuntimeException("line ${ctx.start.line}: variable $varName is not defined")
         }
         return DefaultValue
     }

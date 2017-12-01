@@ -36,12 +36,7 @@ class Scope {
 
     fun setVariable(name: String, value: Int): Boolean {
         val ns = getVarNamespace(name)
-        return when (ns != null) {
-            true -> {
-                ns!!.setVariable(name, value); true
-            }
-            false -> false
-        }
+        return ns?.setVariable(name, value) ?: false
     }
 
     fun getVariable(name: String): Int? {
@@ -66,8 +61,9 @@ class Namespace {
         functions[name] = block
     }
 
-    fun setVariable(name: String, value: Int) {
+    fun setVariable(name: String, value: Int): Boolean {
         variables[name] = value
+        return true
     }
 
 }
