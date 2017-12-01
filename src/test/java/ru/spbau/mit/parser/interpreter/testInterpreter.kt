@@ -5,7 +5,6 @@ import org.antlr.v4.runtime.CharStreams
 import org.junit.Test
 import ru.spbau.mit.parser.FplLexer
 import ru.spbau.mit.parser.FplParser
-import ru.spbau.mit.parser.Interpreter.FplInterpreter
 import ru.spbau.mit.parser.readFile
 import ru.spbau.mit.parser.redirectOut
 import kotlin.test.assertEquals

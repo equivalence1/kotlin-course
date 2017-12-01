@@ -1,4 +1,4 @@
-package ru.spbau.mit.parser.Interpreter
+package ru.spbau.mit.parser.interpreter
 
 import ru.spbau.mit.parser.FplBaseVisitor
 import ru.spbau.mit.parser.FplParser

@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.CharStreams
 import ru.spbau.mit.parser.FplErrorListener
 import ru.spbau.mit.parser.FplLexer
 import ru.spbau.mit.parser.FplParser
-import ru.spbau.mit.parser.Interpreter.FplInterpreter
+import ru.spbau.mit.parser.interpreter.FplInterpreter
 
 
 fun main(args: Array<String>) {
