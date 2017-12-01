@@ -79,12 +79,13 @@ class FplInterpreter : FplBaseVisitor<Value>() {
         if (scope.currentFrame().variables.containsKey(ctx.name.text)) {
             throw RuntimeException("line ${ctx.start.line}: trying to overload variable ${ctx.name.text} ")
         }
-        scope.addVariable(ctx.name.text)
+        val varName = ctx.name.text
+        scope.addVariable(varName)
         ctx.expression()?.let {
             val result = ctx.expression()?.accept(this)
-            scope.setVariable(ctx.name.text, result!!.value)
+            scope.setVariable(varName, result!!.value)
         }
-        return Value(scope.getVariable(ctx.name.text)!!, false)
+        return Value(scope.getVariable(varName)!!, false)
     }
 
     override fun visitWhileStatement(ctx: FplParser.WhileStatementContext): Value {
@@ -118,8 +119,9 @@ class FplInterpreter : FplBaseVisitor<Value>() {
 
     override fun visitAssignment(ctx: FplParser.AssignmentContext): Value {
         val value = ctx.expression().accept(this)
-        if (!scope.setVariable(ctx.varName.text, value.value)) {
-            throw RuntimeException("line ${ctx.start.line}: variable ${ctx.varName.text} is not defined")
+        val varName = ctx.varName.text
+        if (!scope.setVariable(varName, value.value)) {
+            throw RuntimeException("line ${ctx.start.line}: variable ${varName} is not defined")
         }
         return DefaultValue
     }
@@ -171,9 +173,9 @@ class FplInterpreter : FplBaseVisitor<Value>() {
         val lhs = ctx.lhs.accept(this).value
         val rhs = ctx.rhs.accept(this).value
         return when (ctx.op.text) {
-            "<"  -> Value(if (lhs < rhs)  1 else 0, false)
+            "<"  -> Value(if (lhs <  rhs) 1 else 0, false)
             "<=" -> Value(if (lhs <= rhs) 1 else 0, false)
-            ">"  -> Value(if (lhs > rhs)  1 else 0, false)
+            ">"  -> Value(if (lhs >  rhs) 1 else 0, false)
             ">=" -> Value(if (lhs >= rhs) 1 else 0, false)
             "==" -> Value(if (lhs == rhs) 1 else 0, false)
             "!=" -> Value(if (lhs != rhs) 1 else 0, false)

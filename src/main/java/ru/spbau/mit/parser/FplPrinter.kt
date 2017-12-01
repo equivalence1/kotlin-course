@@ -40,14 +40,7 @@ object FplPrinter : FplBaseVisitor<Unit>() {
     // statements {{{
 
     override fun visitStatement(ctx: FplParser.StatementContext) {
-        // TODO something better-looking?
-        ctx.function()?.accept(this)
-        ctx.variable()?.accept(this)
-        ctx.expression()?.accept(this)
-        ctx.whileStatement()?.accept(this)
-        ctx.ifStatement()?.accept(this)
-        ctx.assignment()?.accept(this)
-        ctx.returnStatement()?.accept(this)
+        ctx.getChild(0).accept(this)
     }
 
     override fun visitFunction(ctx: FplParser.FunctionContext) {
