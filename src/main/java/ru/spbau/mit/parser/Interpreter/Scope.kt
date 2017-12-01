@@ -37,7 +37,9 @@ class Scope {
     fun setVariable(name: String, value: Int): Boolean {
         val ns = getVarNamespace(name)
         return when (ns != null) {
-            true -> {ns!!.setVariable(name, value); true}
+            true -> {
+                ns!!.setVariable(name, value); true
+            }
             false -> false
         }
     }

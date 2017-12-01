@@ -14,7 +14,7 @@ class FplInterpreter : FplBaseVisitor<Value>() {
     override fun visitFile(ctx: FplParser.FileContext): Value {
         scope.enterFrame()
 
-        scope.addFunction("println") {args ->
+        scope.addFunction("println") { args ->
             println(args.joinToString(", "))
             DefaultValue
         }
@@ -47,7 +47,7 @@ class FplInterpreter : FplBaseVisitor<Value>() {
     }
 
     override fun visitFunction(ctx: FplParser.FunctionContext): Value {
-        with (ctx) {
+        with(ctx) {
             if (scope.currentFrame().functions.containsKey(name.text)) {
                 throw RuntimeException("line ${ctx.start.line}: trying to overload function ${name.text}")
             }
@@ -134,8 +134,8 @@ class FplInterpreter : FplBaseVisitor<Value>() {
     // expression {{{
 
     override fun visitFcallExpr(ctx: FplParser.FcallExprContext): Value {
-        val arguments: List<Int> = ctx.argumentsList().arguments.map {
-            arg -> arg.accept(this).value
+        val arguments: List<Int> = ctx.argumentsList().arguments.map { arg ->
+            arg.accept(this).value
         }
         val result = scope.getFunction(ctx.name.text)
         if (result === null) {
