@@ -1,4 +1,4 @@
 package ru.spbau.mit.parser.interpreter
 
-open class Value(val value: Int, val returned: Boolean)
-object DefaultValue : Value(0, false)
+open class Value(val value: Int = 0, val returned: Boolean = false)
+object DefaultValue : Value()
