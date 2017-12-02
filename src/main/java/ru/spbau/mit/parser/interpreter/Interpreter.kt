@@ -81,7 +81,7 @@ class FplInterpreter : FplBaseVisitor<Value>() {
             val result = it.accept(this)
             scope.setVariable(varName, result.value)
         }
-        return Value(scope.getVariable(varName)!!, false)
+        return Value(scope.getVariable(varName)!!)
     }
 
     override fun visitWhileStatement(ctx: FplParser.WhileStatementContext): Value {
@@ -140,7 +140,7 @@ class FplInterpreter : FplBaseVisitor<Value>() {
             throw RuntimeException("line ${ctx.start.line}: function ${ctx.name.text} not found")
         }
         try {
-            return Value(result.invoke(arguments).value, false)
+            return Value(result.invoke(arguments).value)
         } catch (e: RuntimeException) {
             throw RuntimeException("function call at line ${ctx.start.line} produced an exception:\n" + e.message)
         }
@@ -151,16 +151,16 @@ class FplInterpreter : FplBaseVisitor<Value>() {
         val rhs = ctx.rhs.accept(this).value
 
         val res = if (ctx.op.text == "+") lhs + rhs else lhs - rhs
-        return Value(res, false)
+        return Value(res)
     }
 
     override fun visitMulExpr(ctx: FplParser.MulExprContext): Value {
         val lhs = ctx.lhs.accept(this).value
         val rhs = ctx.rhs.accept(this).value
         return when (ctx.op.text) {
-            "*" -> Value(lhs * rhs, false)
-            "/" -> Value(lhs / rhs, false)
-            "%" -> Value(lhs % rhs, false)
+            "*" -> Value(lhs * rhs)
+            "/" -> Value(lhs / rhs)
+            "%" -> Value(lhs % rhs)
             else -> throw IllegalArgumentException("bad mul expr")
         }
     }
@@ -169,12 +169,12 @@ class FplInterpreter : FplBaseVisitor<Value>() {
         val lhs = ctx.lhs.accept(this).value
         val rhs = ctx.rhs.accept(this).value
         return when (ctx.op.text) {
-            "<"  -> Value(if (lhs <  rhs) 1 else 0, false)
-            "<=" -> Value(if (lhs <= rhs) 1 else 0, false)
-            ">"  -> Value(if (lhs >  rhs) 1 else 0, false)
-            ">=" -> Value(if (lhs >= rhs) 1 else 0, false)
-            "==" -> Value(if (lhs == rhs) 1 else 0, false)
-            "!=" -> Value(if (lhs != rhs) 1 else 0, false)
+            "<"  -> Value(if (lhs <  rhs) 1 else 0)
+            "<=" -> Value(if (lhs <= rhs) 1 else 0)
+            ">"  -> Value(if (lhs >  rhs) 1 else 0)
+            ">=" -> Value(if (lhs >= rhs) 1 else 0)
+            "==" -> Value(if (lhs == rhs) 1 else 0)
+            "!=" -> Value(if (lhs != rhs) 1 else 0)
             else -> throw IllegalArgumentException("bad cmp expr")
         }
     }
@@ -184,8 +184,8 @@ class FplInterpreter : FplBaseVisitor<Value>() {
         val rhs = ctx.rhs.accept(this).value
 
         return when (ctx.op.text) {
-            "||" -> Value(if ((lhs != 0) || (rhs != 0)) 1 else 0, false)
-            "&&" -> Value(if ((lhs != 0) && (rhs != 0)) 1 else 0, false)
+            "||" -> Value(if ((lhs != 0) || (rhs != 0)) 1 else 0)
+            "&&" -> Value(if ((lhs != 0) && (rhs != 0)) 1 else 0)
             else -> throw IllegalArgumentException("bad logical expr")
         }
     }
@@ -193,8 +193,8 @@ class FplInterpreter : FplBaseVisitor<Value>() {
     override fun visitUnaryExpr(ctx: FplParser.UnaryExprContext): Value {
         val value = ctx.expression().accept(this).value
         return when (ctx.op.text) {
-            "+" -> Value(value, false)
-            "-" -> Value(-value, false)
+            "+" -> Value(value)
+            "-" -> Value(-value)
             else -> throw IllegalArgumentException("bad unary expr")
         }
     }
@@ -204,11 +204,11 @@ class FplInterpreter : FplBaseVisitor<Value>() {
         if (value === null) {
             throw RuntimeException("line ${ctx.start.line}: variable ${ctx.Identifier().text} is not defined")
         }
-        return Value(value, false)
+        return Value(value)
     }
 
     override fun visitIntExpr(ctx: FplParser.IntExprContext): Value {
-        return Value(ctx.Int().text.toInt(), false)
+        return Value(ctx.Int().text.toInt())
     }
 
     override fun visitExprInExpr(ctx: FplParser.ExprInExprContext): Value {
