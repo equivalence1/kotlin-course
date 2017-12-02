@@ -42,10 +42,6 @@ class FplInterpreter : FplBaseVisitor<Value>() {
 
     // statements {{{
 
-    override fun visitStatement(ctx: FplParser.StatementContext): Value {
-        return ctx.getChild(0).accept(this)
-    }
-
     override fun visitFunction(ctx: FplParser.FunctionContext): Value {
         with(ctx) {
             if (scope.currentFrame().functions.containsKey(name.text)) {

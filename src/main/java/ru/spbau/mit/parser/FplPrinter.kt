@@ -39,10 +39,6 @@ object FplPrinter : FplBaseVisitor<Unit>() {
 
     // statements {{{
 
-    override fun visitStatement(ctx: FplParser.StatementContext) {
-        ctx.getChild(0).accept(this)
-    }
-
     override fun visitFunction(ctx: FplParser.FunctionContext) {
         print("fun ${ctx.name.text}(")
         ctx.parameterList()?.accept(this)
